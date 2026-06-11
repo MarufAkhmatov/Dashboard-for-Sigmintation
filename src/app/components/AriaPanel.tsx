@@ -25,11 +25,13 @@ export function AriaPanel() {
 
   return (
     <div
-      className="rounded-2xl flex flex-col overflow-hidden"
+      className="flex flex-col overflow-hidden"
       style={{
-        background: "linear-gradient(160deg, #1a3040 0%, #0f2030 60%, #162840 100%)",
-        border: "1px solid rgba(255,255,255,0.12)",
-        minHeight: 280,
+        background: "linear-gradient(165deg, #083A47 0%, #0c5563 45%, #4EB6A6 100%)",
+        borderRadius: 26,
+        boxShadow: "0 10px 30px rgba(0,0,0,0.10)",
+        height: "100%",
+        minHeight: 300,
       }}
     >
       {/* Background blob */}

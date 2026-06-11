@@ -36,7 +36,7 @@ export function GlucoseGauge() {
   });
 
   return (
-    <div className="bg-card rounded-2xl p-5 flex flex-col gap-1" style={{ backdropFilter: "blur(12px)", border: "1px solid rgba(255,255,255,0.6)" }}>
+    <div className="p-6 flex flex-col gap-1" style={{ height: "100%" }}>
       <div className="flex items-center justify-between">
         <span style={{ fontSize: "0.85rem", fontWeight: 500, color: "#1a2030" }}>Glucose</span>
         <span style={{ fontSize: "1.1rem", fontWeight: 600, color: "#e53e3e" }}>-5%</span>
