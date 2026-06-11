@@ -10,7 +10,7 @@ const tabs = ["Daily", "Monthly", "Weekly", "Yearly"];
 export function WellnessChart() {
   const [active, setActive] = useState("Daily");
 
-  const CHART_H = 150;
+  const CHART_H = 210;
 
   return (
     <div className="p-6 flex flex-col gap-4" style={{ height: "100%" }}>

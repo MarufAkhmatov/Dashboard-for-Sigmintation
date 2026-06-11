@@ -31,8 +31,8 @@ const glassCircle: React.CSSProperties = {
 /* ---------- white card ---------- */
 const card: React.CSSProperties = {
   background: "#ffffff",
-  borderRadius: 26,
-  boxShadow: "0 10px 30px rgba(0,0,0,0.06)",
+  borderRadius: 14,
+  boxShadow: "0 8px 24px rgba(0,0,0,0.06)",
   overflow: "hidden",
 };
 const innerDivider = "1px solid #eef1f4";
@@ -101,6 +101,8 @@ export default function App() {
         fontFamily: "var(--font-sans)",
         display: "flex",
         flexDirection: "column",
+        height: "100vh",
+        overflow: "hidden",
       }}
     >
       {/* ===================== TOP NAV ===================== */}
@@ -170,7 +172,7 @@ export default function App() {
       </header>
 
       {/* ===================== CONTENT ===================== */}
-      <main style={{ flex: 1, padding: "10px 32px 32px", display: "flex", flexDirection: "column", gap: 22 }}>
+      <main style={{ flex: 1, padding: "4px 32px 32px", display: "flex", flexDirection: "column", gap: 14 }}>
 
         {/* Title */}
         <div>
@@ -191,15 +193,15 @@ export default function App() {
           </motion.p>
         </div>
 
-        {/* Metrics — distributed across full width */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%", padding: "4px 4px 6px" }}>
+        {/* Metrics — grouped analytics cluster (not full width) */}
+        <div style={{ display: "flex", alignItems: "center", gap: 120, padding: "2px 4px" }}>
           <Metric value="1,360" label="Total Appointments" />
           <Metric value="2,654" label="Active Patients" />
           <Metric value="54" label="Critical Alerts" />
         </div>
 
         {/* Top row — 3 tightly packed white cards */}
-        <div style={{ display: "grid", gridTemplateColumns: "1.1fr 1.3fr 0.95fr", gap: 14, alignItems: "stretch" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1.1fr 1.3fr 0.95fr", gap: 10, alignItems: "stretch", flex: "1.7 1 0", minHeight: 0 }}>
           <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} style={{ ...card }}>
             <WellnessChart />
           </motion.div>
@@ -222,7 +224,7 @@ export default function App() {
         </div>
 
         {/* Bottom row — aligned baseline */}
-        <div style={{ display: "grid", gridTemplateColumns: "1.75fr 1fr", gap: 14, alignItems: "stretch" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1.75fr 1fr", gap: 10, alignItems: "stretch", flex: "1 1 0", minHeight: 0 }}>
           <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.34 }} style={{ ...card }}>
             <HealthcareProviders />
           </motion.div>
