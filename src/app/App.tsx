@@ -11,6 +11,7 @@ import { GlucoseGauge } from "./components/GlucoseGauge";
 import { PatientFlowChart } from "./components/PatientFlowChart";
 import { HealthcareProviders } from "./components/HealthcareProviders";
 import { AriaPanel } from "./components/AriaPanel";
+import { BestProjects } from "./components/BestProjects";
 import { useI18n, LANGS } from "./i18n";
 
 /* ---------- glass tokens (nav) ---------- */
@@ -248,12 +249,20 @@ export default function App() {
           </motion.div>
         </div>
 
-        {/* Bottom row — aligned baseline */}
-        <div style={{ display: "grid", gridTemplateColumns: "1.75fr 1fr", gap: 10, alignItems: "stretch", flex: "1 1 0", minHeight: 0 }}>
-          <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.34 }} style={{ ...card }}>
-            <HealthcareProviders />
-          </motion.div>
-          <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.42 }}>
+        {/* Bottom row — columns aligned to the top row (1.1 / 1.3 / 0.95) */}
+        <div style={{ display: "grid", gridTemplateColumns: "1.1fr 1.3fr 0.95fr", gap: 10, alignItems: "stretch", flex: "1 1 0", minHeight: 0 }}>
+          {/* Best Projects + Healthcare Providers span columns 1-2 */}
+          <div style={{ gridColumn: "1 / 3", display: "grid", gridTemplateColumns: "0.9fr 1.5fr", gap: 10, alignItems: "stretch", minHeight: 0 }}>
+            <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.34 }} style={{ ...card }}>
+              <BestProjects />
+            </motion.div>
+            <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} style={{ ...card }}>
+              <HealthcareProviders />
+            </motion.div>
+          </div>
+
+          {/* Aria aligned to the Patient Flow column (3) */}
+          <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.46 }} style={{ gridColumn: "3 / 4" }}>
             <AriaPanel />
           </motion.div>
         </div>
