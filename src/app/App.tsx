@@ -196,7 +196,7 @@ export default function App() {
       </header>
 
       {/* ===================== CONTENT ===================== */}
-      <main style={{ flex: 1, padding: "4px 32px 32px", display: "flex", flexDirection: "column", gap: 14 }}>
+      <main style={{ flex: 1, padding: "4px 32px 32px", display: "flex", flexDirection: "column", gap: 10 }}>
 
         {/* Title (left) + metrics cluster (right) on one row */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 32, flexWrap: "nowrap" }}>
