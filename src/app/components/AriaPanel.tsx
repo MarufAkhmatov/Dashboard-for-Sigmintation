@@ -1,23 +1,23 @@
 import { useState } from "react";
 import { Send, Plus, Mic } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
+import { useI18n } from "../i18n";
 
-const suggestions = ["Why is my HRV low?", "How's my recovery today?"];
-
-const initialMessages = [
-  { role: "assistant", text: "Hi! I'm Aria, your personal health AI. Ask me anything about your health data." },
-];
+const suggestionKeys = ["suggestion1", "suggestion2"];
 
 export function AriaPanel() {
+  const { t } = useI18n();
   const [input, setInput] = useState("");
-  const [messages, setMessages] = useState(initialMessages);
+  const [messages, setMessages] = useState(() => [
+    { role: "assistant", text: t("aria_greeting") },
+  ]);
 
   const send = () => {
     if (!input.trim()) return;
     const userMsg = { role: "user", text: input };
     const aiMsg = {
       role: "assistant",
-      text: "Based on your recent health data, I recommend maintaining consistent sleep patterns and staying hydrated. Your HRV trends suggest moderate stress — consider a 10-minute breathing exercise today.",
+      text: t("aria_reply"),
     };
     setMessages(prev => [...prev, userMsg, aiMsg]);
     setInput("");
@@ -46,17 +46,17 @@ export function AriaPanel() {
         />
         <div style={{ position: "absolute", top: 16, left: 16 }}>
           <div style={{ fontSize: "1.1rem", fontWeight: 700, color: "#ffffff" }}>Aria</div>
-          <div style={{ fontSize: "0.72rem", color: "rgba(255,255,255,0.55)" }}>Your personal AI assistant</div>
+          <div style={{ fontSize: "0.72rem", color: "rgba(255,255,255,0.55)" }}>{t("aria_sub")}</div>
         </div>
       </div>
 
       <div className="flex flex-col gap-3 p-4 flex-1">
         {/* Suggestion chips */}
         <div className="flex gap-2 flex-wrap">
-          {suggestions.map(s => (
+          {suggestionKeys.map(s => (
             <button
               key={s}
-              onClick={() => setInput(s)}
+              onClick={() => setInput(t(s))}
               style={{
                 background: "rgba(255,255,255,0.1)",
                 border: "1px solid rgba(255,255,255,0.18)",
@@ -68,7 +68,7 @@ export function AriaPanel() {
                 backdropFilter: "blur(8px)",
               }}
             >
-              {s}
+              {t(s)}
             </button>
           ))}
         </div>
@@ -101,7 +101,7 @@ export function AriaPanel() {
 
         {/* Credits */}
         <div className="flex items-center justify-between">
-          <span style={{ fontSize: "0.65rem", color: "rgba(255,255,255,0.4)" }}>100 Credits Remaining</span>
+          <span style={{ fontSize: "0.65rem", color: "rgba(255,255,255,0.4)" }}>{t("credits")}</span>
           <button style={{
             background: "rgba(255,255,255,0.15)",
             border: "1px solid rgba(255,255,255,0.2)",
@@ -111,7 +111,7 @@ export function AriaPanel() {
             color: "rgba(255,255,255,0.8)",
             cursor: "pointer",
           }}>
-            Upgrade
+            {t("upgrade")}
           </button>
         </div>
 
@@ -130,7 +130,7 @@ export function AriaPanel() {
             value={input}
             onChange={e => setInput(e.target.value)}
             onKeyDown={e => e.key === "Enter" && send()}
-            placeholder="Ask anything..."
+            placeholder={t("ask_anything")}
             style={{
               flex: 1, background: "none", border: "none", outline: "none",
               fontSize: "0.75rem", color: "rgba(255,255,255,0.85)",

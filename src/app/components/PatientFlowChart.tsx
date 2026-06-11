@@ -1,5 +1,6 @@
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import { motion } from "motion/react";
+import { useI18n } from "../i18n";
 
 const data = [
   { name: "Completed", value: 650, color: "#d4a84b" },
@@ -14,10 +15,11 @@ const segments = [
 ];
 
 export function PatientFlowChart() {
+  const { t } = useI18n();
   return (
     <div className="p-6 flex flex-col gap-3" style={{ height: "100%" }}>
       <div className="flex items-center justify-between">
-        <span style={{ fontSize: "0.85rem", fontWeight: 300, color: "#1a2030" }}>Patient Flow</span>
+        <span style={{ fontSize: "0.85rem", fontWeight: 300, color: "#1a2030" }}>{t("patient_flow")}</span>
         <button style={{ background: "none", border: "none", cursor: "pointer", color: "#9aa5b4", fontSize: "1rem" }}>···</button>
       </div>
 
@@ -46,18 +48,18 @@ export function PatientFlowChart() {
           </ResponsiveContainer>
           <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
             <span style={{ fontSize: "1rem", fontWeight: 700, color: "#1a2030" }}>860</span>
-            <span style={{ fontSize: "0.6rem", color: "#9aa5b4" }}>68% Capacity</span>
+            <span style={{ fontSize: "0.6rem", color: "#9aa5b4" }}>{t("capacity68")}</span>
           </div>
         </div>
 
         <div className="flex flex-col gap-3 flex-1">
           <div>
             <div style={{ fontSize: "1.1rem", fontWeight: 700, color: "#1a2030" }}>650</div>
-            <div style={{ fontSize: "0.7rem", color: "#9aa5b4" }}>Completed</div>
+            <div style={{ fontSize: "0.7rem", color: "#9aa5b4" }}>{t("completed")}</div>
           </div>
           <div>
             <div style={{ fontSize: "1.1rem", fontWeight: 700, color: "#1a2030" }}>326</div>
-            <div style={{ fontSize: "0.7rem", color: "#9aa5b4" }}>Upcoming</div>
+            <div style={{ fontSize: "0.7rem", color: "#9aa5b4" }}>{t("upcoming")}</div>
           </div>
         </div>
       </div>
@@ -67,7 +69,7 @@ export function PatientFlowChart() {
           <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=56&h=56&fit=crop&auto=format" alt="Doctor" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
         </div>
         <p style={{ fontSize: "0.65rem", color: "#6b7a8d", lineHeight: 1.4 }}>
-          You reached optimal recovery. Keeping your bedtime consistent will sustain this
+          {t("recovery_note")}
         </p>
       </div>
     </div>

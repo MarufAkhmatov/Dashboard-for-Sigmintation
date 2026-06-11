@@ -1,5 +1,6 @@
 import { BarChart, Bar, XAxis, ResponsiveContainer, Cell } from "recharts";
 import { motion } from "motion/react";
+import { useI18n } from "../i18n";
 
 const data = [
   { month: "Jan", value: 72, color: "#d4a84b" },
@@ -8,6 +9,7 @@ const data = [
 ];
 
 export function HRVChart() {
+  const { d: tr } = useI18n();
   return (
     <div className="p-6 flex flex-col gap-2" style={{ height: "100%" }}>
       <div className="flex items-center justify-between">
@@ -24,7 +26,7 @@ export function HRVChart() {
       <div style={{ height: 70 }}>
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data} barSize={24} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
-            <XAxis dataKey="month" tick={{ fontSize: 10, fill: "#9aa5b4" }} axisLine={false} tickLine={false} />
+            <XAxis dataKey="month" tickFormatter={(v) => tr.monShort[v] ?? v} tick={{ fontSize: 10, fill: "#9aa5b4" }} axisLine={false} tickLine={false} />
             <Bar dataKey="value" radius={[6, 6, 0, 0]} animationDuration={1000}>
               {data.map((entry, i) => (
                 <Cell key={i} fill={entry.color} />

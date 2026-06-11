@@ -1,6 +1,8 @@
 import { motion } from "motion/react";
+import { useI18n } from "../i18n";
 
 export function GlucoseGauge() {
+  const { t } = useI18n();
   const value = 92;
   const max = 140;
   const pct = value / max;
@@ -38,7 +40,7 @@ export function GlucoseGauge() {
   return (
     <div className="p-6 flex flex-col gap-1" style={{ height: "100%" }}>
       <div className="flex items-center justify-between">
-        <span style={{ fontSize: "0.85rem", fontWeight: 300, color: "#1a2030" }}>Glucose</span>
+        <span style={{ fontSize: "0.85rem", fontWeight: 300, color: "#1a2030" }}>{t("glucose")}</span>
         <span style={{ fontSize: "1.1rem", fontWeight: 600, color: "#e53e3e" }}>-5%</span>
       </div>
       <div className="flex items-center justify-center">
@@ -66,9 +68,9 @@ export function GlucoseGauge() {
           {ticks.map((t, i) => (
             <line key={i} x1={t.x1} y1={t.y1} x2={t.x2} y2={t.y2} stroke="#c8ccd4" strokeWidth={1} />
           ))}
-          <text x={cx} y={cy - 2} textAnchor="middle" style={{ fontSize: 13, fontWeight: 700, fill: "#1a2030", fontFamily: "Montserrat, sans-serif" }}>{value}</text>
-          <text x={cx} y={cy + 10} textAnchor="middle" style={{ fontSize: 7, fill: "#9aa5b4", fontFamily: "Montserrat, sans-serif" }}>mg/dL</text>
-          <text x={cx} y={cy + 20} textAnchor="middle" style={{ fontSize: 7, fill: "#9aa5b4", fontFamily: "Montserrat, sans-serif" }}>68% Capacity</text>
+          <text x={cx} y={cy - 2} textAnchor="middle" style={{ fontSize: 13, fontWeight: 700, fill: "#1a2030", fontFamily: "var(--font-sans)" }}>{value}</text>
+          <text x={cx} y={cy + 10} textAnchor="middle" style={{ fontSize: 7, fill: "#9aa5b4", fontFamily: "var(--font-sans)" }}>{t("mgdl")}</text>
+          <text x={cx} y={cy + 20} textAnchor="middle" style={{ fontSize: 7, fill: "#9aa5b4", fontFamily: "var(--font-sans)" }}>{t("capacity68")}</text>
         </svg>
       </div>
     </div>

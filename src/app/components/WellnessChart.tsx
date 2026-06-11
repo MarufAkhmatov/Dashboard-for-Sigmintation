@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion } from "motion/react";
+import { useI18n } from "../i18n";
 
 const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const heights = [28, 35, 62, 88, 70, 30, 22];
@@ -9,43 +10,43 @@ const tabs = ["Daily", "Monthly", "Weekly", "Yearly"];
 
 export function WellnessChart() {
   const [active, setActive] = useState("Daily");
+  const { t, d: tr } = useI18n();
 
   const CHART_H = 210;
 
   return (
     <div className="p-6 flex flex-col gap-4" style={{ height: "100%" }}>
       <div className="flex items-center justify-between">
-        <span style={{ color: "#1a2030", fontSize: "0.85rem", fontWeight: 300 }}>Your Wellness Progress</span>
+        <span style={{ color: "#1a2030", fontSize: "0.85rem", fontWeight: 300 }}>{t("wellness_progress")}</span>
         <span style={{ fontSize: "1.5rem", fontWeight: 600, color: "#1a2030" }}>64%</span>
       </div>
 
       <div className="flex gap-4">
-        {tabs.map(t => (
+        {tabs.map(tab => (
           <button
-            key={t}
-            onClick={() => setActive(t)}
+            key={tab}
+            onClick={() => setActive(tab)}
             style={{
               fontSize: "0.75rem",
-              color: active === t ? "#1a2030" : "#9aa5b4",
-              fontWeight: active === t ? 600 : 400,
-              borderBottom: active === t ? "2px solid #1a2030" : "2px solid transparent",
+              color: active === tab ? "#1a2030" : "#9aa5b4",
+              fontWeight: active === tab ? 600 : 300,
               paddingBottom: "2px",
               background: "none",
               border: "none",
-              borderBottom: active === t ? "2px solid #1a2030" : "2px solid transparent",
+              borderBottom: active === tab ? "2px solid #1a2030" : "2px solid transparent",
               cursor: "pointer",
             }}
           >
-            {t}
+            {t("tab_" + tab)}
           </button>
         ))}
       </div>
 
       <div className="flex items-end gap-2 flex-1" style={{ minHeight: CHART_H + 20 }}>
-        {days.map((d, i) => {
+        {days.map((dy, i) => {
           const stemH = Math.round((heights[i] / 100) * CHART_H);
           return (
-            <div key={d} className="flex flex-col items-center flex-1 gap-1">
+            <div key={dy} className="flex flex-col items-center flex-1 gap-1">
               <div className="flex flex-col items-center justify-end" style={{ height: CHART_H, position: "relative" }}>
                 {/* lollipop stem */}
                 <motion.div
@@ -77,7 +78,7 @@ export function WellnessChart() {
                   }}
                 />
               </div>
-              <span style={{ fontSize: "0.65rem", color: "#9aa5b4" }}>{d}</span>
+              <span style={{ fontSize: "0.65rem", color: "#9aa5b4" }}>{tr.dayShort[dy]}</span>
             </div>
           );
         })}

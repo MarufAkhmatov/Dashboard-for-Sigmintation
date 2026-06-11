@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Search, SlidersHorizontal, MoreVertical } from "lucide-react";
 import { motion } from "motion/react";
+import { useI18n } from "../i18n";
 
 const providers = [
   {
@@ -28,6 +29,7 @@ const providers = [
 
 export function HealthcareProviders() {
   const [search, setSearch] = useState("");
+  const { t } = useI18n();
 
   const filtered = providers.filter(p =>
     p.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -37,23 +39,23 @@ export function HealthcareProviders() {
   return (
     <div className="p-6 flex flex-col gap-4" style={{ height: "100%" }}>
       <div className="flex items-center justify-between">
-        <span style={{ fontSize: "0.9rem", fontWeight: 600, color: "#1a2030" }}>Healthcare Providers</span>
+        <span style={{ fontSize: "0.9rem", fontWeight: 600, color: "#1a2030" }}>{t("healthcare_providers")}</span>
         <div className="flex gap-2">
           <button style={{ width: 32, height: 32, borderRadius: 8, background: "#f0f4f7", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
             <Search size={14} color="#6b7a8d" />
           </button>
           <button style={{ display: "flex", alignItems: "center", gap: 4, height: 32, borderRadius: 8, background: "#f0f4f7", border: "none", cursor: "pointer", padding: "0 10px", fontSize: "0.75rem", color: "#6b7a8d" }}>
-            <SlidersHorizontal size={12} /> Filter
+            <SlidersHorizontal size={12} /> {t("filter")}
           </button>
         </div>
       </div>
 
       {/* Header row */}
       <div style={{ display: "grid", gridTemplateColumns: "2fr 1.2fr 1.3fr 40px", fontSize: "0.72rem", color: "#9aa5b4", paddingBottom: 4, borderBottom: "1px solid #e4eaef" }}>
-        <span>Provider Name</span>
-        <span>Department</span>
-        <span>Contact</span>
-        <span>Action</span>
+        <span>{t("provider_name")}</span>
+        <span>{t("department")}</span>
+        <span>{t("contact")}</span>
+        <span>{t("action")}</span>
       </div>
 
       {filtered.map((p, i) => (
@@ -80,11 +82,11 @@ export function HealthcareProviders() {
               <div style={{ fontSize: "0.78rem", fontWeight: 300, color: "#1a2030" }}>{p.name}</div>
               <div className="flex items-center gap-1">
                 <div style={{ width: 6, height: 6, borderRadius: "50%", background: p.available ? "#2d7a5f" : "#e53e3e" }} />
-                <span style={{ fontSize: "0.65rem", color: "#9aa5b4" }}>{p.available ? "Available" : "Absent"}</span>
+                <span style={{ fontSize: "0.65rem", color: "#9aa5b4" }}>{p.available ? t("available") : t("absent")}</span>
               </div>
             </div>
           </div>
-          <span style={{ fontSize: "0.75rem", color: "#6b7a8d" }}>{p.dept}</span>
+          <span style={{ fontSize: "0.75rem", color: "#6b7a8d" }}>{t(p.dept)}</span>
           <span style={{ fontSize: "0.75rem", color: "#6b7a8d" }}>{p.contact}</span>
           <button style={{ background: "none", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
             <MoreVertical size={14} color="#9aa5b4" />

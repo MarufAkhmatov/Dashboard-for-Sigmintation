@@ -1,5 +1,6 @@
 import { motion } from "motion/react";
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Dot } from "recharts";
+import { useI18n } from "../i18n";
 
 const data = [
   { day: "Sun", value: 0.62 },
@@ -12,17 +13,18 @@ const data = [
 ];
 
 export function StressRecoveryChart() {
+  const { t, d: tr } = useI18n();
   return (
     <div className="p-6 flex flex-col gap-3">
       <div className="flex items-center justify-between">
-        <span style={{ fontSize: "0.85rem", fontWeight: 300, color: "#1a2030" }}>Stress / Recovery Balance</span>
+        <span style={{ fontSize: "0.85rem", fontWeight: 300, color: "#1a2030" }}>{t("stress_recovery")}</span>
         <span style={{ fontSize: "1.3rem", fontWeight: 600, color: "#1a2030" }}>+0.34</span>
       </div>
 
       <div style={{ height: 90 }}>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data} margin={{ top: 8, right: 8, left: -30, bottom: 0 }}>
-            <XAxis dataKey="day" tick={{ fontSize: 10, fill: "#9aa5b4" }} axisLine={false} tickLine={false} />
+            <XAxis dataKey="day" tickFormatter={(v) => tr.dayShort[v] ?? v} tick={{ fontSize: 10, fill: "#9aa5b4" }} axisLine={false} tickLine={false} />
             <YAxis hide />
             <Line
               type="monotone"
@@ -42,7 +44,7 @@ export function StressRecoveryChart() {
           <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=56&h=56&fit=crop&auto=format" alt="Doctor" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
         </div>
         <p style={{ fontSize: "0.68rem", color: "#6b7a8d", lineHeight: 1.4 }}>
-          You reached optimal recovery. Keeping your bedtime consistent will sustain this
+          {t("recovery_note")}
         </p>
       </div>
     </div>

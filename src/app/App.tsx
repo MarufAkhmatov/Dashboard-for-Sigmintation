@@ -11,6 +11,7 @@ import { GlucoseGauge } from "./components/GlucoseGauge";
 import { PatientFlowChart } from "./components/PatientFlowChart";
 import { HealthcareProviders } from "./components/HealthcareProviders";
 import { AriaPanel } from "./components/AriaPanel";
+import { useI18n, LANGS } from "./i18n";
 
 /* ---------- glass tokens (nav) ---------- */
 const glassPanel: React.CSSProperties = {
@@ -91,6 +92,7 @@ function Metric({ value, label }: { value: string; label: string }) {
 
 export default function App() {
   const [activeNav] = useState("Dashboard");
+  const { t, lang, setLang } = useI18n();
 
   return (
     <div
@@ -136,7 +138,7 @@ export default function App() {
             <span style={{ width: 26, height: 26, borderRadius: "50%", background: "#e9f2f0", display: "flex", alignItems: "center", justifyContent: "center" }}>
               <MessageCircle size={14} color="#0c5563" />
             </span>
-            Dashboard
+            {t("nav_dashboard")}
             <ChevronDown size={14} color="#9aa5b4" />
           </button>
           {navIcons.map(({ icon: Icon, label }) => (
@@ -149,10 +151,31 @@ export default function App() {
         <div style={{ flex: 1 }} />
 
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          {/* Language switcher */}
+          <div style={{ display: "flex", alignItems: "center", gap: 2, padding: 4, borderRadius: 999, ...glassPanel }}>
+            {LANGS.map(l => (
+              <button
+                key={l.code}
+                onClick={() => setLang(l.code)}
+                style={{
+                  padding: "5px 11px", borderRadius: 999, border: "none", cursor: "pointer",
+                  fontSize: "0.72rem", fontWeight: lang === l.code ? 600 : 300,
+                  background: lang === l.code ? "#ffffff" : "transparent",
+                  color: lang === l.code ? "#1a2030" : "#ffffff",
+                  boxShadow: lang === l.code ? "0 2px 8px rgba(20,40,55,0.12)" : "none",
+                  fontFamily: "var(--font-sans)",
+                  transition: "all 0.18s",
+                }}
+              >
+                {l.label}
+              </button>
+            ))}
+          </div>
+
           <div style={{ display: "flex", alignItems: "center", gap: 9, borderRadius: 999, padding: "9px 18px", width: 210, ...glassPanel }}>
             <Search size={15} color="#52707c" />
             <input
-              placeholder="Search..."
+              placeholder={t("search")}
               style={{ border: "none", outline: "none", background: "transparent", fontSize: "0.82rem", color: "#1a2030", fontFamily: "var(--font-sans)", width: "100%" }}
             />
           </div>
@@ -182,7 +205,7 @@ export default function App() {
               animate={{ opacity: 1, y: 0 }}
               style={{ fontSize: 50, fontWeight: 300, color: "#ffffff", letterSpacing: "-1.5px", margin: 0, lineHeight: 1.05 }}
             >
-              Dashboard Overview
+              {t("title")}
             </motion.h1>
             <motion.p
               initial={{ opacity: 0 }}
@@ -190,15 +213,15 @@ export default function App() {
               transition={{ delay: 0.15 }}
               style={{ fontSize: 19, fontWeight: 300, color: "rgba(255,255,255,0.85)", margin: "8px 0 0 0" }}
             >
-              Welcome back! Here's what's happening with your clients today
+              {t("subtitle")}
             </motion.p>
           </div>
 
           {/* Metrics — grouped analytics cluster, right-aligned */}
           <div style={{ display: "flex", alignItems: "center", gap: 38, flexShrink: 0 }}>
-            <Metric value="1,360" label="Total Appointments" />
-            <Metric value="2,654" label="Active Patients" />
-            <Metric value="54" label="Critical Alerts" />
+            <Metric value="1,360" label={t("total_appointments")} />
+            <Metric value="2,654" label={t("active_patients")} />
+            <Metric value="54" label={t("critical_alerts")} />
           </div>
         </div>
 
