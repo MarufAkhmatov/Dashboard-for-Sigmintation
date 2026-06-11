@@ -1,7 +1,8 @@
 import { motion } from "motion/react";
 import { useI18n } from "../i18n";
+import { usePortfolio } from "../portfolio";
 
-const projects = [
+const fallback = [
   { name: "Cardio Care", pct: 82, color: "#2d7a5f" },
   { name: "Wellness 2.0", pct: 64, color: "#9b59b6" },
   { name: "Lab Sync", pct: 47, color: "#d4a84b" },
@@ -9,6 +10,8 @@ const projects = [
 
 export function BestProjects() {
   const { t } = useI18n();
+  const { data } = usePortfolio();
+  const projects = data?.widgets?.top_projects?.length ? data.widgets.top_projects : fallback;
   return (
     <div className="p-6 flex flex-col gap-4" style={{ height: "100%" }}>
       <span style={{ fontSize: "0.9rem", fontWeight: 600, color: "#1a2030" }}>
@@ -16,8 +19,8 @@ export function BestProjects() {
       </span>
 
       <div className="flex flex-col gap-5" style={{ flex: 1, justifyContent: "center" }}>
-        {projects.map((p, i) => (
-          <div key={p.name} className="flex flex-col gap-2">
+        {projects.map((p: any, i: number) => (
+          <div key={i} className="flex flex-col gap-2">
             <div className="flex items-center justify-between">
               <span style={{ fontSize: "0.78rem", fontWeight: 300, color: "#1a2030" }}>{p.name}</span>
               <span style={{ fontSize: "0.72rem", fontWeight: 600, color: p.color }}>{p.pct}%</span>

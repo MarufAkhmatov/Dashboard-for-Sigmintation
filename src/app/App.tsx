@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
   Calendar, Users, LayoutGrid, FileText,
-  Search, Settings, Bell, ChevronDown, MessageCircle, Sparkles, X,
+  Search, Settings, Bell, ChevronDown, MessageCircle, Sparkles, X, Upload,
 } from "lucide-react";
+import { usePortfolio } from "./portfolio";
 import { WellnessChart } from "./components/WellnessChart";
 import { StressRecoveryChart } from "./components/StressRecoveryChart";
 import { HRVChart } from "./components/HRVChart";
@@ -86,6 +87,25 @@ export default function App() {
   const isTablet = bp === "tablet";
   const isMobile = bp === "mobile";
   const [ariaOpen, setAriaOpen] = useState(false);
+  const { data, upload, online } = usePortfolio();
+  const hm = data?.widgets?.header_metrics;
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+
+  const onUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0];
+    if (!f) return;
+    setUploading(true);
+    try {
+      const r = await upload(f);
+      alert(r?.ok ? `Loaded ${r.meta.issues} issues (${r.meta.epics} projects) from ${f.name}` : `Upload failed: ${r?.error || "error"}`);
+    } catch {
+      alert("Upload failed — is the backend running? (python backend/server.py)");
+    } finally {
+      setUploading(false);
+      if (fileRef.current) fileRef.current.value = "";
+    }
+  };
 
   /* Stress + HRV + Glucose grouped card */
   const stressCard = (extra: React.CSSProperties = {}) => (
@@ -168,6 +188,17 @@ export default function App() {
             ))}
           </div>
 
+          {/* Upload Jira export — always */}
+          <input ref={fileRef} type="file" accept=".csv,.xlsx,.xlsm,.html,.htm" onChange={onUpload} style={{ display: "none" }} />
+          <button
+            onClick={() => fileRef.current?.click()}
+            title={online ? "Upload Jira export (CSV / XLSX / HTML)" : "Backend offline"}
+            style={{ width: 42, height: 42, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: online ? "#0c5563" : "#9aa5b4", position: "relative", ...glassCircle }}
+          >
+            <Upload size={17} className={uploading ? "animate-pulse" : ""} />
+            <span style={{ position: "absolute", bottom: 6, right: 7, width: 7, height: 7, borderRadius: "50%", background: online ? "#1f9d57" : "#e53e3e", border: "1.5px solid #cfe0e2" }} />
+          </button>
+
           {/* Search — desktop + tablet */}
           {!isMobile && (
             <div style={{ display: "flex", alignItems: "center", gap: 9, borderRadius: 999, padding: "9px 18px", width: isTablet ? 160 : 210, ...glassPanel }}>
@@ -216,9 +247,9 @@ export default function App() {
           </div>
 
           <div style={{ display: "flex", alignItems: "center", gap: isMobile ? 22 : 38, flexShrink: 0, flexWrap: "wrap" }}>
-            <Metric value="1,360" label={t("total_appointments")} />
-            <Metric value="2,654" label={t("active_patients")} />
-            <Metric value="54" label={t("critical_alerts")} />
+            <Metric value={hm ? String(hm[0].value) : "—"} label={t("kpi_total_projects")} />
+            <Metric value={hm ? String(hm[1].value) : "—"} label={t("kpi_completed")} />
+            <Metric value={hm ? String(hm[2].value) : "—"} label={t("kpi_critical")} />
           </div>
         </div>
 

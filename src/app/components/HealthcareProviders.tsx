@@ -1,40 +1,32 @@
-import { useState } from "react";
-import { Search, SlidersHorizontal, MoreVertical } from "lucide-react";
+import { Search, SlidersHorizontal } from "lucide-react";
 import { motion } from "motion/react";
 import { useI18n } from "../i18n";
+import { usePortfolio } from "../portfolio";
 
-const providers = [
-  {
-    name: "Dr. Chloe Davis",
-    dept: "Pathology",
-    contact: "(505) 555-0123",
-    available: true,
-    img: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=56&h=56&fit=crop&auto=format",
-  },
-  {
-    name: "Dr. Ben Carter",
-    dept: "Orthopedics",
-    contact: "(405) 654-7654",
-    available: false,
-    img: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=56&h=56&fit=crop&auto=format",
-  },
-  {
-    name: "Dr. Alice Smith",
-    dept: "Pathology",
-    contact: "(504) 654-0543",
-    available: true,
-    img: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=56&h=56&fit=crop&auto=format",
-  },
+const fallback = [
+  { name: "Dr. Chloe Davis", col2: "Pathology", col3: "(505) 555-0123", available: true, rank: "1",
+    img: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=56&h=56&fit=crop&auto=format" },
+  { name: "Dr. Ben Carter", col2: "Orthopedics", col3: "(405) 654-7654", available: false, rank: "2",
+    img: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=56&h=56&fit=crop&auto=format" },
+  { name: "Dr. Alice Smith", col2: "Pathology", col3: "(504) 654-0543", available: true, rank: "3",
+    img: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=56&h=56&fit=crop&auto=format" },
 ];
 
 export function HealthcareProviders() {
-  const [search, setSearch] = useState("");
   const { t } = useI18n();
+  const { data } = usePortfolio();
+  const board = data?.widgets?.pm_leaderboard;
 
-  const filtered = providers.filter(p =>
-    p.name.toLowerCase().includes(search.toLowerCase()) ||
-    p.dept.toLowerCase().includes(search.toLowerCase())
-  );
+  const filtered = board?.length
+    ? board.map((b: any) => ({
+        name: b.pm,
+        col2: String(b.score),
+        col3: `${b.projects_completed} • ${b.avg_ttm}d`,
+        available: b.available,
+        rank: `#${b.rank}`,
+        img: `https://i.pravatar.cc/64?u=${encodeURIComponent(b.pm)}`,
+      }))
+    : fallback;
 
   return (
     <div className="p-6 flex flex-col gap-4" style={{ height: "100%" }}>
@@ -58,9 +50,9 @@ export function HealthcareProviders() {
         <span>{t("action")}</span>
       </div>
 
-      {filtered.map((p, i) => (
+      {filtered.map((p: any, i: number) => (
         <motion.div
-          key={p.name}
+          key={i}
           initial={{ opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: i * 0.08 }}
@@ -86,11 +78,9 @@ export function HealthcareProviders() {
               </div>
             </div>
           </div>
-          <span style={{ fontSize: "0.75rem", color: "#6b7a8d" }}>{t(p.dept)}</span>
-          <span style={{ fontSize: "0.75rem", color: "#6b7a8d" }}>{p.contact}</span>
-          <button style={{ background: "none", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <MoreVertical size={14} color="#9aa5b4" />
-          </button>
+          <span style={{ fontSize: "0.75rem", color: "#6b7a8d" }}>{p.col2}</span>
+          <span style={{ fontSize: "0.75rem", color: "#6b7a8d" }}>{p.col3}</span>
+          <span style={{ fontSize: "0.78rem", fontWeight: 600, color: "#1a2030", textAlign: "right" }}>{p.rank}</span>
         </motion.div>
       ))}
     </div>

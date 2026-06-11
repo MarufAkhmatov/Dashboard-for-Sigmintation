@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "motion/react";
 import { useI18n } from "../i18n";
+import { usePortfolio } from "../portfolio";
 
 const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const heights = [28, 35, 62, 88, 70, 30, 22];
@@ -11,6 +12,11 @@ const tabs = ["Daily", "Monthly", "Weekly", "Yearly"];
 export function WellnessChart() {
   const [active, setActive] = useState("Daily");
   const { t, d: tr } = useI18n();
+  const { data } = usePortfolio();
+  const w = data?.widgets?.wellness;
+  const heightsData = w?.bars?.length ? w.bars : heights;
+  const labelsData = w?.labels?.length ? w.labels : days.map((d) => tr.dayShort[d]);
+  const pct = w ? w.completion_pct : 64;
 
   const CHART_H = 210;
 
@@ -18,7 +24,7 @@ export function WellnessChart() {
     <div className="p-6 flex flex-col gap-4" style={{ height: "100%" }}>
       <div className="flex items-center justify-between">
         <span style={{ color: "#1a2030", fontSize: "0.85rem", fontWeight: 300 }}>{t("wellness_progress")}</span>
-        <span style={{ fontSize: "1.5rem", fontWeight: 600, color: "#1a2030" }}>64%</span>
+        <span style={{ fontSize: "1.5rem", fontWeight: 600, color: "#1a2030" }}>{pct}%</span>
       </div>
 
       <div className="flex gap-4">
@@ -44,7 +50,7 @@ export function WellnessChart() {
 
       <div className="flex items-end gap-2 flex-1" style={{ minHeight: CHART_H + 20 }}>
         {days.map((dy, i) => {
-          const stemH = Math.round((heights[i] / 100) * CHART_H);
+          const stemH = Math.round(((heightsData[i] ?? 0) / 100) * CHART_H);
           return (
             <div key={dy} className="flex flex-col items-center flex-1 gap-1">
               <div className="flex flex-col items-center justify-end" style={{ height: CHART_H, position: "relative" }}>
@@ -78,7 +84,7 @@ export function WellnessChart() {
                   }}
                 />
               </div>
-              <span style={{ fontSize: "0.65rem", color: "#9aa5b4" }}>{tr.dayShort[dy]}</span>
+              <span style={{ fontSize: "0.65rem", color: "#9aa5b4" }}>{labelsData[i]}</span>
             </div>
           );
         })}

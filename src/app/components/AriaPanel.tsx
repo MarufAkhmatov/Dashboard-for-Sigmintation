@@ -2,25 +2,31 @@ import { useState } from "react";
 import { Send, Plus, Mic } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { useI18n } from "../i18n";
+import { usePortfolio } from "../portfolio";
 
 const suggestionKeys = ["suggestion1", "suggestion2"];
 
 export function AriaPanel() {
   const { t } = useI18n();
+  const { ask } = usePortfolio();
   const [input, setInput] = useState("");
+  const [busy, setBusy] = useState(false);
   const [messages, setMessages] = useState(() => [
     { role: "assistant", text: t("aria_greeting") },
   ]);
 
-  const send = () => {
-    if (!input.trim()) return;
-    const userMsg = { role: "user", text: input };
-    const aiMsg = {
-      role: "assistant",
-      text: t("aria_reply"),
-    };
-    setMessages(prev => [...prev, userMsg, aiMsg]);
+  const send = async () => {
+    const q = input.trim();
+    if (!q || busy) return;
+    setMessages(prev => [...prev, { role: "user", text: q }]);
     setInput("");
+    setBusy(true);
+    try {
+      const res = await ask(q);
+      setMessages(prev => [...prev, { role: "assistant", text: res?.answer || t("aria_reply") }]);
+    } finally {
+      setBusy(false);
+    }
   };
 
   return (

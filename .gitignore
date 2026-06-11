@@ -18,3 +18,20 @@ npm-debug.log*
 .env
 .env.local
 .env.*.local
+
+# python
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# platform runtime data (folders tracked via .gitkeep, contents ignored)
+storage/uploads/*
+storage/current/*
+storage/archive/*
+storage/temp/*
+storage/exports/*
+logs/*
+ai/models/*
+ai/vector_db/*
+!**/.gitkeep

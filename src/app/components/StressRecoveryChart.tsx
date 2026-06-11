@@ -1,8 +1,9 @@
 import { motion } from "motion/react";
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Dot } from "recharts";
 import { useI18n } from "../i18n";
+import { usePortfolio } from "../portfolio";
 
-const data = [
+const fallbackData = [
   { day: "Sun", value: 0.62 },
   { day: "Mon", value: 0.58 },
   { day: "Tue", value: 0.71 },
@@ -14,16 +15,22 @@ const data = [
 
 export function StressRecoveryChart() {
   const { t, d: tr } = useI18n();
+  const { data } = usePortfolio();
+  const tt = data?.widgets?.ttm_trend;
+  const chartData = tt?.points?.length
+    ? tt.points.map((p: any) => ({ day: p.period, value: p.value }))
+    : fallbackData;
+  const delta = tt ? tt.delta : "+0.34";
   return (
     <div className="p-6 flex flex-col gap-3">
       <div className="flex items-center justify-between">
         <span style={{ fontSize: "0.85rem", fontWeight: 300, color: "#1a2030" }}>{t("stress_recovery")}</span>
-        <span style={{ fontSize: "1.3rem", fontWeight: 600, color: "#1a2030" }}>+0.34</span>
+        <span style={{ fontSize: "1.3rem", fontWeight: 600, color: "#1a2030" }}>{delta}</span>
       </div>
 
       <div style={{ height: 90 }}>
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={data} margin={{ top: 8, right: 8, left: -30, bottom: 0 }}>
+          <LineChart data={chartData} margin={{ top: 8, right: 8, left: -30, bottom: 0 }}>
             <XAxis dataKey="day" tickFormatter={(v) => tr.dayShort[v] ?? v} tick={{ fontSize: 10, fill: "#9aa5b4" }} axisLine={false} tickLine={false} />
             <YAxis hide />
             <Line

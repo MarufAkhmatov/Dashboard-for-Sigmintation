@@ -1,0 +1,29 @@
+[
+  {
+    "filename": "sample_jira.csv",
+    "stored_as": "sample_jira.csv",
+    "rows": 149,
+    "issues": 149,
+    "epics": 28,
+    "uploaded_at": "2026-06-11T20:02:46",
+    "activated_at": "2026-06-11T20:02:46"
+  },
+  {
+    "filename": "sample_jira.csv",
+    "stored_as": "sample_jira.csv",
+    "rows": 149,
+    "issues": 149,
+    "epics": 28,
+    "uploaded_at": "2026-06-11T20:01:50",
+    "activated_at": "2026-06-11T20:01:50"
+  },
+  {
+    "filename": "sample_jira.csv",
+    "stored_as": "sample_jira.csv",
+    "rows": 149,
+    "issues": 149,
+    "epics": 28,
+    "uploaded_at": "2026-06-11T19:34:39",
+    "activated_at": "2026-06-11T19:34:39"
+  }
+]
