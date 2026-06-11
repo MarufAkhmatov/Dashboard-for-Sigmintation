@@ -51,7 +51,7 @@ function MetricBars() {
   return (
     <div
       style={{
-        display: "flex", alignItems: "flex-end", gap: 3, height: 46,
+        display: "flex", alignItems: "flex-end", gap: 2.5, height: 40,
         filter: "drop-shadow(0 0 4px rgba(255,255,255,0.5))",
       }}
     >
@@ -74,14 +74,14 @@ function Metric({ value, label }: { value: string; label: string }) {
       initial={{ opacity: 0, y: -8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.45 }}
-      style={{ display: "flex", alignItems: "center", gap: 18 }}
+      style={{ display: "flex", alignItems: "center", gap: 13 }}
     >
       <MetricBars />
       <div>
-        <div style={{ fontSize: 50, fontWeight: 400, color: "#ffffff", lineHeight: 1, letterSpacing: "-1.5px" }}>
+        <div style={{ fontSize: 40, fontWeight: 500, color: "#ffffff", lineHeight: 1, letterSpacing: "-1px" }}>
           {value}
         </div>
-        <div style={{ fontSize: 15, fontWeight: 300, color: "rgba(255,255,255,0.75)", marginTop: 7 }}>
+        <div style={{ fontSize: 13, fontWeight: 300, color: "rgba(255,255,255,0.78)", marginTop: 6, whiteSpace: "nowrap" }}>
           {label}
         </div>
       </div>
@@ -174,30 +174,32 @@ export default function App() {
       {/* ===================== CONTENT ===================== */}
       <main style={{ flex: 1, padding: "4px 32px 32px", display: "flex", flexDirection: "column", gap: 14 }}>
 
-        {/* Title */}
-        <div>
-          <motion.h1
-            initial={{ opacity: 0, y: -6 }}
-            animate={{ opacity: 1, y: 0 }}
-            style={{ fontSize: 50, fontWeight: 400, color: "#ffffff", letterSpacing: "-1.5px", margin: 0, lineHeight: 1.05 }}
-          >
-            Dashboard Overview
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.15 }}
-            style={{ fontSize: 19, fontWeight: 300, color: "rgba(255,255,255,0.85)", margin: "8px 0 0 0" }}
-          >
-            Welcome back! Here's what's happening with your clients today
-          </motion.p>
-        </div>
+        {/* Title (left) + metrics cluster (right) on one row */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 32, flexWrap: "nowrap" }}>
+          <div style={{ maxWidth: 560, flexShrink: 0 }}>
+            <motion.h1
+              initial={{ opacity: 0, y: -6 }}
+              animate={{ opacity: 1, y: 0 }}
+              style={{ fontSize: 50, fontWeight: 400, color: "#ffffff", letterSpacing: "-1.5px", margin: 0, lineHeight: 1.05 }}
+            >
+              Dashboard Overview
+            </motion.h1>
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.15 }}
+              style={{ fontSize: 19, fontWeight: 300, color: "rgba(255,255,255,0.85)", margin: "8px 0 0 0" }}
+            >
+              Welcome back! Here's what's happening with your clients today
+            </motion.p>
+          </div>
 
-        {/* Metrics — grouped analytics cluster (not full width) */}
-        <div style={{ display: "flex", alignItems: "center", gap: 120, padding: "2px 4px" }}>
-          <Metric value="1,360" label="Total Appointments" />
-          <Metric value="2,654" label="Active Patients" />
-          <Metric value="54" label="Critical Alerts" />
+          {/* Metrics — grouped analytics cluster, right-aligned */}
+          <div style={{ display: "flex", alignItems: "center", gap: 38, flexShrink: 0 }}>
+            <Metric value="1,360" label="Total Appointments" />
+            <Metric value="2,654" label="Active Patients" />
+            <Metric value="54" label="Critical Alerts" />
+          </div>
         </div>
 
         {/* Top row — 3 tightly packed white cards */}

@@ -66,9 +66,9 @@ export function GlucoseGauge() {
           {ticks.map((t, i) => (
             <line key={i} x1={t.x1} y1={t.y1} x2={t.x2} y2={t.y2} stroke="#c8ccd4" strokeWidth={1} />
           ))}
-          <text x={cx} y={cy - 2} textAnchor="middle" style={{ fontSize: 13, fontWeight: 700, fill: "#1a2030", fontFamily: "DM Sans" }}>{value}</text>
-          <text x={cx} y={cy + 10} textAnchor="middle" style={{ fontSize: 7, fill: "#9aa5b4", fontFamily: "DM Sans" }}>mg/dL</text>
-          <text x={cx} y={cy + 20} textAnchor="middle" style={{ fontSize: 7, fill: "#9aa5b4", fontFamily: "DM Sans" }}>68% Capacity</text>
+          <text x={cx} y={cy - 2} textAnchor="middle" style={{ fontSize: 13, fontWeight: 700, fill: "#1a2030", fontFamily: "Montserrat, sans-serif" }}>{value}</text>
+          <text x={cx} y={cy + 10} textAnchor="middle" style={{ fontSize: 7, fill: "#9aa5b4", fontFamily: "Montserrat, sans-serif" }}>mg/dL</text>
+          <text x={cx} y={cy + 20} textAnchor="middle" style={{ fontSize: 7, fill: "#9aa5b4", fontFamily: "Montserrat, sans-serif" }}>68% Capacity</text>
         </svg>
       </div>
     </div>
