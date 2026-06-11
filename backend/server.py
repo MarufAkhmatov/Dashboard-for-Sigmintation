@@ -8,6 +8,7 @@ always-runnable equivalent that reuses the exact same engines.
 Run:  python backend/server.py   ->  http://localhost:8000
 """
 import json
+import hashlib
 import datetime as dt
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlparse, parse_qs
@@ -19,14 +20,32 @@ PORT = 8077
 
 
 def _ingest_path(path: Path, filename: str):
-    rows = parser.parse_file(path)
-    issues = normalize.normalize_rows(rows)
-    if not issues:
-        raise ValueError("No issues found in file")
+    raw = path.read_bytes()
+    h = hashlib.sha256(raw).hexdigest()[:16]
+    issues = storage.parse_cache_get(h)          # fast path: cached parse
+    nrows = None
+    if issues is None:
+        rows = parser.parse_file(path)
+        nrows = len(rows)
+        if not rows:
+            raise ValueError(
+                "This file has no data table — it looks like a Jira login/auth page, "
+                "not an export. In Jira open your filter (project = PMD OR project = PMO), "
+                "then Export -> 'Excel CSV (all fields)' (or Printable HTML / XLSX) and upload that."
+            )
+        issues = normalize.normalize_rows(rows)
+        if not issues:
+            cols = ", ".join(list(rows[0].keys())[:12])
+            raise ValueError(
+                "Found a table but no issue-key column was recognised. "
+                f"Detected columns: [{cols}]."
+            )
+        storage.parse_cache_put(h, issues)        # cache parsed/normalized issues
     payload = aggregate.build(issues)
     meta = {
-        "filename": filename, "stored_as": path.name, "rows": len(rows),
+        "filename": filename, "stored_as": path.name, "rows": nrows if nrows is not None else len(issues),
         "issues": len(issues), "epics": payload["kpis"]["total_epics"],
+        "cached": issues is not None and nrows is None,
         "uploaded_at": dt.datetime.now().isoformat(timespec="seconds"),
     }
     storage.set_current({"issues": issues, "payload": payload}, meta)

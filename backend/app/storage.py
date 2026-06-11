@@ -12,6 +12,19 @@ from . import config
 CURRENT_DATA = config.CURRENT / "dataset.json"
 CURRENT_META = config.CURRENT / "meta.json"
 HISTORY_FILE = config.STORAGE / "upload_history.json"
+CACHE_DIR = config.TEMP / "cache"
+CACHE_DIR.mkdir(parents=True, exist_ok=True)
+
+
+def parse_cache_get(h: str):
+    f = CACHE_DIR / f"{h}.json"
+    if f.exists():
+        return json.loads(f.read_text(encoding="utf-8"))
+    return None
+
+
+def parse_cache_put(h: str, issues: list):
+    (CACHE_DIR / f"{h}.json").write_text(json.dumps(issues, ensure_ascii=False), encoding="utf-8")
 
 
 def _now() -> str:

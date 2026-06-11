@@ -35,3 +35,6 @@ logs/*
 ai/models/*
 ai/vector_db/*
 !**/.gitkeep
+
+# runtime upload metadata
+storage/upload_history.json

@@ -1,6 +1,8 @@
 """Multi-format Jira export parser: CSV / XLSX / HTML -> list[dict] of raw rows."""
 import csv
 import io
+import re
+import html as _htmllib
 from pathlib import Path
 
 
@@ -78,6 +80,12 @@ def _parse_xlsx(data: bytes) -> list[dict]:
 
 def _parse_html(data: bytes) -> list[dict]:
     text = _decode(data)
+    # Jira "Printable" / Word-HTML detail export: each issue is a card with
+    # [KEY] <a href=.../browse/KEY> and a label/value grid (often RU/UZ locale).
+    if re.search(r"\[[A-Z]{2,}-\d+\]\s*(&nbsp;)?\s*<a\s+href=", text) or 'class="formtitle"' in text:
+        rows = _parse_jira_printable(text)
+        if rows:
+            return rows
     try:
         from bs4 import BeautifulSoup
         soup = BeautifulSoup(text, "html.parser")
@@ -100,6 +108,69 @@ def _parse_html(data: bytes) -> list[dict]:
         if any(rec.values()):
             out.append(rec)
     return out
+
+
+# ---- Jira "Printable" detail HTML parser -----------------------------------
+def _clean(s: str) -> str:
+    s = re.sub(r"<[^>]+>", " ", s or "")
+    s = _htmllib.unescape(s)
+    return re.sub(r"\s+", " ", s).strip()
+
+
+def _cell_raw(region: str, label: str) -> str:
+    m = re.search(r"<b>\s*" + re.escape(label) + r"\s*:?\s*</b>\s*</td>\s*<td[^>]*>(.*?)</td>",
+                  region, re.S)
+    return m.group(1) if m else ""
+
+
+def _parse_jira_printable(text: str) -> list[dict]:
+    parts = re.split(r"(?=\[[A-Z]{2,}-\d+\]\s*(?:&nbsp;)?\s*<a\s+href=)", text)
+    rows: list[dict] = []
+    for p in parts:
+        km = re.search(r"\[([A-Z]{2,}-\d+)\]", p)
+        if not km:
+            continue
+        key = km.group(1)
+        sm = re.search(r"/browse/" + re.escape(key) + r'"[^>]*>(.*?)</a>', p, re.S)
+        summary = _clean(sm.group(1)) if sm else ""
+
+        sub = re.search(r'subText[^>]*>(.*?)</span>', p, re.S)
+        subtext = _clean(sub.group(1)) if sub else ""
+
+        def dlabel(lbl: str) -> str:
+            m = re.search(lbl + r"\s*:?\s*([0-3]?\d\.[01]?\d\.\d{4})", subtext)
+            return m.group(1) if m else ""
+
+        # label -> text value map from the grid
+        fields: dict[str, str] = {}
+        for lm in re.finditer(r"<b>\s*([^<:]+?)\s*:?\s*</b>\s*</td>\s*<td[^>]*>(.*?)</td>", p, re.S):
+            lbl = _clean(lm.group(1))
+            if lbl and lbl not in fields:
+                fields[lbl] = _clean(lm.group(2))
+
+        epic_raw = _cell_raw(p, "Epic Link")
+        epic_key = ""
+        em = re.search(r"/browse/([A-Z]{2,}-\d+)", epic_raw)
+        if em:
+            epic_key = em.group(1)
+        blocks = "|".join(re.findall(r"/browse/([A-Z]{2,}-\d+)", _cell_raw(p, "Blocks")))
+
+        rows.append({
+            "Issue key": key,
+            "Summary": summary,
+            "Status": fields.get("Статус") or fields.get("Status") or "",
+            "Issue Type": fields.get("Тип") or fields.get("Type") or "",
+            "PM": fields.get("PM") or "",
+            "Assignee": fields.get("Исполнитель") or fields.get("Assignee") or "",
+            "Resolution": fields.get("Решение") or fields.get("Resolution") or "",
+            "Project": key.split("-")[0],
+            "Created": dlabel("Создано") or dlabel("Created"),
+            "Updated": dlabel("Обновлен") or dlabel("Updated"),
+            "Due Date": dlabel("Срок исполнения") or dlabel("Due"),
+            "Epic Link": epic_key,
+            "Blocks": blocks,
+        })
+    return rows
 
 
 def _parse_html_stdlib(text: str) -> list[dict]:

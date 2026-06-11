@@ -11,19 +11,29 @@ from . import config
 
 # ---- flexible column lookup -------------------------------------------------
 _ALIASES = {
-    "key": ["issue key", "key", "issue id", "id"],
-    "type": ["issue type", "type", "issuetype"],
-    "status": ["status"],
-    "summary": ["summary", "title"],
-    "pm": ["assignee", "project manager", "pm", "lead"],
-    "reporter": ["reporter", "creator"],
-    "created": ["created", "created date", "creation date"],
-    "resolved": ["resolved", "resolution date", "resolutiondate", "done date", "completed"],
-    "due": ["due date", "duedate", "due"],
-    "project": ["project", "project key", "project name"],
-    "epic_key": ["epic link", "parent", "parent key", "epic", "parent link"],
-    "story_points": ["story points", "story point estimate", "points"],
-    "history": ["status history", "changelog", "status changes", "history"],
+    "key": ["issue key", "key", "issue id", "id",
+            "ключ вопроса", "ключ задачи", "ключ", "kalit", "masala kaliti"],
+    "type": ["issue type", "type", "issuetype",
+             "тип задачи", "тип запроса", "тип", "tur", "masala turi"],
+    "status": ["status", "статус", "holat"],
+    "summary": ["summary", "title", "тема", "краткое описание", "резюме", "mavzu", "qisqacha"],
+    "pm": ["pm", "project manager", "менеджер проекта", "menejer",
+           "assignee", "исполнитель", "ответственный", "ijrochi", "mas'ul", "lead"],
+    "reporter": ["reporter", "creator", "автор", "создатель", "muallif"],
+    "created": ["created", "created date", "creation date",
+                "создано", "дата создания", "yaratilgan", "yaratilgan sana"],
+    "resolved": ["resolved", "resolution date", "resolutiondate", "done date", "completed",
+                 "дата решения", "решено", "дата завершения", "hal qilingan", "yakunlangan sana"],
+    "due": ["due date", "duedate", "due", "срок", "срок исполнения", "muddat"],
+    "updated": ["updated", "обновлено", "обновленo", "yangilangan", "last updated"],
+    "resolution": ["resolution", "решение", "resolution name", "hal"],
+    "project": ["project", "project key", "project name", "проект", "loyiha"],
+    "epic_key": ["epic link", "parent", "parent key", "epic", "parent link",
+                 "эпик", "ссылка на эпик", "родитель", "epik"],
+    "story_points": ["story points", "story point estimate", "points",
+                     "очки истории", "ballar"],
+    "history": ["status history", "changelog", "status changes", "history",
+                "история статусов", "журнал изменений", "holat tarixi"],
 }
 
 
@@ -33,6 +43,16 @@ def _get(row: dict, field: str) -> str:
         if a in low and str(low[a]).strip():
             return str(low[a]).strip()
     return ""
+
+
+_UNASSIGNED = {"не назначен", "не назначено", "unassigned", "none", "", "автоматический"}
+
+
+def _pm(row: dict) -> str:
+    v = _get(row, "pm").strip()
+    if v.lower() in _UNASSIGNED:
+        return "Unassigned"
+    return v
 
 
 def _get_links(row: dict) -> list[dict]:
@@ -81,10 +101,34 @@ def _iso(d):
 
 
 # ---- status normalization ---------------------------------------------------
+# Cyrillic homoglyphs -> Latin (so "Dоne"/"Tеsting"/"Аnаlysis" match EN canonicals)
+_HOMO = str.maketrans({
+    "А": "A", "В": "B", "Е": "E", "К": "K", "М": "M", "Н": "H", "О": "O",
+    "Р": "P", "С": "C", "Т": "T", "Х": "X", "а": "a", "е": "e", "о": "o",
+    "с": "c", "р": "p", "х": "x", "у": "y", "к": "k", "м": "m", "т": "t",
+})
+
+
 def canon_status(s: str) -> str:
-    s = (s or "").strip().upper()
-    s = config.STATUS_SYNONYMS.get(s, s)
-    return s
+    raw = (s or "").strip().upper()
+    if raw in config.STATUS_SYNONYMS:
+        return config.STATUS_SYNONYMS[raw]
+    norm = raw.translate(_HOMO)
+    return config.STATUS_SYNONYMS.get(norm, norm)
+
+
+_TYPE = {
+    "epic": "Epic",
+    "task": "Task", "задача": "Task", "масала": "Task",
+    "new feature": "New Feature", "новая функциональность": "New Feature", "yangi funksiya": "New Feature",
+    "story": "Story", "история": "Story",
+    "sub-task": "Sub-task", "subtask": "Sub-task", "подзадача": "Sub-task",
+    "bug": "Bug", "ошибка": "Bug",
+}
+
+
+def canon_type(s: str) -> str:
+    return _TYPE.get((s or "").strip().lower(), (s or "Task").strip())
 
 
 def status_group(s: str) -> str:
@@ -146,9 +190,10 @@ def normalize_rows(rows: list[dict], default_project: str = "") -> list[dict]:
         key = _get(row, "key")
         if not key:
             continue
-        itype = _get(row, "type") or "Task"
-        status = _get(row, "status") or "BACKLOG"
+        itype = canon_type(_get(row, "type") or "Task")
+        status_c = canon_status(_get(row, "status") or "BACKLOG")
         created = parse_date(_get(row, "created"))
+        updated = parse_date(_get(row, "updated"))
         resolved = parse_date(_get(row, "resolved"))
         due = parse_date(_get(row, "due"))
         sp = _get(row, "story_points")
@@ -156,18 +201,30 @@ def normalize_rows(rows: list[dict], default_project: str = "") -> list[dict]:
             sp_val = float(sp) if sp else None
         except ValueError:
             sp_val = None
+
+        # Completion / decline from resolution + status
+        rl = _get(row, "resolution").strip().lower()
+        declined = (status_c in config.DECLINED_STATUSES) or (rl in config.RESOLUTION_DECLINED)
+        done = (status_c in config.DONE_STATUSES) or (rl in config.RESOLUTION_DONE)
+        if declined:
+            status_c = "DECLINED"
+            resolved = None
+        elif done and not resolved:
+            # exports often omit a Resolution Date column -> use Updated as proxy
+            resolved = updated or created
+
         is_epic = itype.strip().lower() in config.EPIC_TYPES
         project = _get(row, "project") or default_project or key.split("-")[0]
-        history = _parse_history(_get(row, "history"), created, resolved, status)
+        history = _parse_history(_get(row, "history"), created, resolved, status_c)
         issues.append({
             "key": key,
             "project": project,
             "type": itype,
             "is_epic": is_epic,
-            "status": canon_status(status),
-            "status_group": status_group(status),
+            "status": status_c,
+            "status_group": status_group(status_c),
             "summary": _get(row, "summary"),
-            "pm": _get(row, "pm") or "Unassigned",
+            "pm": _pm(row),
             "reporter": _get(row, "reporter"),
             "created": _iso(created),
             "resolved": _iso(resolved),

@@ -23,9 +23,12 @@ DELIVERY_STATUSES = {"IN PROGRESS", "TESTING", "PILOT IO", "DONE"}
 DONE_STATUSES = {"DONE", "CLOSED", "RESOLVED", "COMPLETED"}
 DECLINED_STATUSES = {"DECLINED", "REJECTED", "CANCELLED", "CANCELED", "WONT DO", "WON'T DO"}
 
-# Synonym map -> canonical status
+# Synonym map -> canonical status (matched against UPPERCASED original first,
+# then against a homoglyph-normalized form). Covers EN + RU + UZ workflows.
 STATUS_SYNONYMS = {
+    # English
     "TO DO": "BACKLOG", "TODO": "BACKLOG", "OPEN": "BACKLOG", "NEW": "BACKLOG",
+    "NEED INFO": "BACKLOG", "WAITING FOR APPROVAL": "VALIDATION",
     "IN ANALYSIS": "ANALYSIS", "WAITING FOR ANALYSIS": "ANALYSIS",
     "WAITING FOR VALIDATION": "VALIDATION", "IN VALIDATION": "VALIDATION",
     "ARCH REVIEW": "ARCHITECTURE REVIEW", "WAITING FOR ARCHITECTURE REVIEW": "ARCHITECTURE REVIEW",
@@ -33,8 +36,21 @@ STATUS_SYNONYMS = {
     "IN DEVELOPMENT": "IN PROGRESS", "DEVELOPMENT": "IN PROGRESS", "DEV": "IN PROGRESS",
     "IN TESTING": "TESTING", "QA": "TESTING", "TEST": "TESTING",
     "PILOT": "PILOT IO", "PILOT I/O": "PILOT IO", "PILOT-IO": "PILOT IO",
-    "DONE ": "DONE", "RESOLVED": "DONE", "CLOSED": "DONE", "COMPLETED": "DONE",
+    "RESOLVED": "DONE", "CLOSED": "DONE", "COMPLETED": "DONE", "LAUNCHED": "DONE",
+    # Russian (uppercased)
+    "В РАБОТЕ": "IN PROGRESS", "В РАЗРАБОТКЕ": "IN PROGRESS", "В РАЗРАБОТКE": "IN PROGRESS",
+    "ЗАПУЩЕНО": "DONE", "ГОТОВО": "DONE", "ВЫПОЛНЕНО": "DONE", "СДЕЛАНО": "DONE",
+    "БЕКЛОГ": "BACKLOG", "ОТЛОЖЕННЫЕ": "BACKLOG", "ОТКРЫТ": "BACKLOG",
+    "ТЕСТИРУЕТСЯ": "TESTING", "ТЕСТИРОВАНИЕ": "TESTING",
+    "АНАЛИЗ": "ANALYSIS", "ВАЛИДАЦИЯ": "VALIDATION", "ИНИЦИАЦИЯ": "INITIATION",
+    "ОТМЕНЁННЫЕ": "DECLINED", "ОТМЕНЕННЫЕ": "DECLINED", "ОТКЛОНЕНО": "DECLINED", "ОТМЕНА": "DECLINED",
 }
+
+# Resolutions that mean the work is finished (completed) vs declined.
+RESOLUTION_DONE = {"готово", "resolved", "done", "выполнено", "сделано", "fixed", "complete"}
+RESOLUTION_DECLINED = {"declined", "отменённые", "отменённый", "отклонено", "won't do",
+                       "wont do", "rejected", "cancelled", "canceled", "отменено", "duplicate"}
+RESOLUTION_NONE = {"нет решения", "unresolved", "", "none"}
 
 # AI / ARIA
 ARIA_PROVIDER = "ollama"        # ollama | llama | qwen | deepseek
