@@ -77,7 +77,7 @@ export function HealthcareProviders() {
               style={{ width: 32, height: 32, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }}
             />
             <div>
-              <div style={{ fontSize: "0.78rem", fontWeight: 500, color: "#1a2030" }}>{p.name}</div>
+              <div style={{ fontSize: "0.78rem", fontWeight: 300, color: "#1a2030" }}>{p.name}</div>
               <div className="flex items-center gap-1">
                 <div style={{ width: 6, height: 6, borderRadius: "50%", background: p.available ? "#2d7a5f" : "#e53e3e" }} />
                 <span style={{ fontSize: "0.65rem", color: "#9aa5b4" }}>{p.available ? "Available" : "Absent"}</span>

@@ -17,7 +17,7 @@ export function PatientFlowChart() {
   return (
     <div className="p-6 flex flex-col gap-3" style={{ height: "100%" }}>
       <div className="flex items-center justify-between">
-        <span style={{ fontSize: "0.85rem", fontWeight: 500, color: "#1a2030" }}>Patient Flow</span>
+        <span style={{ fontSize: "0.85rem", fontWeight: 300, color: "#1a2030" }}>Patient Flow</span>
         <button style={{ background: "none", border: "none", cursor: "pointer", color: "#9aa5b4", fontSize: "1rem" }}>···</button>
       </div>
 

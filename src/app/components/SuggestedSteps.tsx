@@ -44,7 +44,7 @@ export function SuggestedSteps() {
             display: "flex", alignItems: "center", gap: 4,
             background: "#ffffff", border: "1px solid #e4eaef",
             borderRadius: 10, padding: "4px 12px", fontSize: "0.75rem",
-            fontWeight: 500, color: "#1a2030", cursor: "pointer",
+            fontWeight: 300, color: "#1a2030", cursor: "pointer",
           }}
         >
           Create Plan <Plus size={12} />
@@ -72,7 +72,7 @@ export function SuggestedSteps() {
                   <Icon size={13} color="#6b7a8d" />
                 </div>
                 <div>
-                  <span style={{ fontSize: "0.78rem", fontWeight: 500, color: "#1a2030" }}>{s.label}</span>
+                  <span style={{ fontSize: "0.78rem", fontWeight: 300, color: "#1a2030" }}>{s.label}</span>
                   <span style={{ fontSize: "0.68rem", color: "#9aa5b4", marginLeft: 4 }}>({s.period})</span>
                 </div>
               </motion.div>

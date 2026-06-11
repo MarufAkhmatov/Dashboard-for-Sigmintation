@@ -11,7 +11,7 @@ export function HRVChart() {
   return (
     <div className="p-6 flex flex-col gap-2" style={{ height: "100%" }}>
       <div className="flex items-center justify-between">
-        <span style={{ fontSize: "0.85rem", fontWeight: 500, color: "#1a2030" }}>HRV</span>
+        <span style={{ fontSize: "0.85rem", fontWeight: 300, color: "#1a2030" }}>HRV</span>
         <motion.span
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

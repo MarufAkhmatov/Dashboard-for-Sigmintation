@@ -15,7 +15,7 @@ export function WellnessChart() {
   return (
     <div className="p-6 flex flex-col gap-4" style={{ height: "100%" }}>
       <div className="flex items-center justify-between">
-        <span style={{ color: "#1a2030", fontSize: "0.85rem", fontWeight: 500 }}>Your Wellness Progress</span>
+        <span style={{ color: "#1a2030", fontSize: "0.85rem", fontWeight: 300 }}>Your Wellness Progress</span>
         <span style={{ fontSize: "1.5rem", fontWeight: 600, color: "#1a2030" }}>64%</span>
       </div>
 

@@ -78,7 +78,7 @@ function Metric({ value, label }: { value: string; label: string }) {
     >
       <MetricBars />
       <div>
-        <div style={{ fontSize: 40, fontWeight: 500, color: "#ffffff", lineHeight: 1, letterSpacing: "-1px" }}>
+        <div style={{ fontSize: 40, fontWeight: 300, color: "#ffffff", lineHeight: 1, letterSpacing: "-1px" }}>
           {value}
         </div>
         <div style={{ fontSize: 13, fontWeight: 300, color: "rgba(255,255,255,0.78)", marginTop: 6, whiteSpace: "nowrap" }}>
@@ -117,7 +117,7 @@ export default function App() {
           <div style={{ width: 40, height: 40, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", ...glassCircle }}>
             <Sparkles size={18} color="#0c5563" />
           </div>
-          <span style={{ fontSize: "1.1rem", fontWeight: 500, color: "#ffffff" }}>CareNest</span>
+          <span style={{ fontSize: "1.1rem", fontWeight: 300, color: "#ffffff" }}>CareNest</span>
         </div>
 
         <div style={{ flex: 1 }} />
@@ -130,7 +130,7 @@ export default function App() {
               padding: "8px 16px 8px 8px", borderRadius: 999,
               background: "#ffffff", border: "none", cursor: "pointer",
               boxShadow: "0 3px 12px rgba(20,40,55,0.12)",
-              fontSize: "0.83rem", fontWeight: 500, color: "#1a2030",
+              fontSize: "0.83rem", fontWeight: 300, color: "#1a2030",
             }}
           >
             <span style={{ width: 26, height: 26, borderRadius: "50%", background: "#e9f2f0", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -180,7 +180,7 @@ export default function App() {
             <motion.h1
               initial={{ opacity: 0, y: -6 }}
               animate={{ opacity: 1, y: 0 }}
-              style={{ fontSize: 50, fontWeight: 400, color: "#ffffff", letterSpacing: "-1.5px", margin: 0, lineHeight: 1.05 }}
+              style={{ fontSize: 50, fontWeight: 300, color: "#ffffff", letterSpacing: "-1.5px", margin: 0, lineHeight: 1.05 }}
             >
               Dashboard Overview
             </motion.h1>
