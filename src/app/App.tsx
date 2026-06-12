@@ -152,9 +152,9 @@ export default function App() {
         {isDesktop && (
           <>
             <div style={{ display: "flex", alignItems: "center", gap: 6, padding: 6, borderRadius: 999, ...glassPanel }}>
-              <button style={{ display: "flex", alignItems: "center", gap: 9, padding: "8px 16px 8px 8px", borderRadius: 999, background: "#ffffff", border: "none", cursor: "pointer", boxShadow: "0 3px 12px rgba(20,40,55,0.12)", fontSize: "0.83rem", fontWeight: 300, color: "#1a2030" }}>
-                <span style={{ width: 26, height: 26, borderRadius: "50%", background: "#e9f2f0", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <MessageCircle size={14} color="#0c5563" />
+              <button style={{ display: "flex", alignItems: "center", gap: 9, padding: "8px 16px 8px 8px", borderRadius: 999, background: "var(--active-bg)", backdropFilter: "blur(14px)", WebkitBackdropFilter: "blur(14px)", border: "none", cursor: "pointer", boxShadow: "var(--active-glow)", fontSize: "0.83rem", fontWeight: 300, color: "var(--active-text)" }}>
+                <span style={{ width: 26, height: 26, borderRadius: "50%", background: "var(--active-chip)", color: "var(--active-icon)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <MessageCircle size={14} />
                 </span>
                 {t("nav_dashboard")}
                 <ChevronDown size={14} color="#9aa5b4" />
@@ -179,9 +179,9 @@ export default function App() {
                 style={{
                   padding: "5px 10px", borderRadius: 999, border: "none", cursor: "pointer",
                   fontSize: "0.72rem", fontWeight: lang === l.code ? 600 : 300,
-                  background: lang === l.code ? "#ffffff" : "transparent",
-                  color: lang === l.code ? "#1a2030" : "#ffffff",
-                  boxShadow: lang === l.code ? "0 2px 8px rgba(20,40,55,0.12)" : "none",
+                  background: lang === l.code ? "var(--active-bg)" : "transparent",
+                  color: lang === l.code ? "var(--active-text)" : "#ffffff",
+                  boxShadow: lang === l.code ? "var(--active-glow)" : "none",
                   fontFamily: "var(--font-sans)", transition: "all 0.18s",
                 }}
               >

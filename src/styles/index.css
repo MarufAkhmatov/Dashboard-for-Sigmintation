@@ -18,6 +18,11 @@
   --glass-shadow: 0 8px 26px rgba(20,40,55,0.10), inset 0 1px 1px rgba(255,255,255,0.6);
   --header-icon: #3f5560;
   --search-text: #1a2030;
+  --active-bg: #ffffff;
+  --active-text: #1a2030;
+  --active-glow: 0 3px 12px rgba(20,40,55,0.12);
+  --active-chip: #e9f2f0;
+  --active-icon: #0c5563;
 }
 
 /* Designed scrollbar for scrollable panels (PM Leaderboard, etc.) */

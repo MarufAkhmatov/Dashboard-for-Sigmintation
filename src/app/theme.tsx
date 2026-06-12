@@ -16,6 +16,12 @@ export const LIGHT = {
   glassShadow: "0 8px 26px rgba(20,40,55,0.10), inset 0 1px 1px rgba(255,255,255,0.6)",
   headerIcon: "#3f5560",
   searchText: "#1a2030",
+  // active menu buttons
+  activeBg: "#ffffff",
+  activeText: "#1a2030",
+  activeGlow: "0 3px 12px rgba(20,40,55,0.12)",
+  activeChip: "#e9f2f0",
+  activeIcon: "#0c5563",
 };
 
 export const DARK = {
@@ -34,6 +40,12 @@ export const DARK = {
   glassShadow: "0 8px 26px rgba(0,0,0,0.45), inset 0 1px 1px rgba(255,255,255,0.05)",
   headerIcon: "#aeb9c6",
   searchText: "#e8eef6",
+  // active menu buttons — glass kept, glowing green
+  activeBg: "rgba(45,122,95,0.32)",
+  activeText: "#daffe9",
+  activeGlow: "0 0 18px rgba(74,182,166,0.55), inset 0 0 0 1px rgba(74,182,166,0.5)",
+  activeChip: "rgba(255,255,255,0.14)",
+  activeIcon: "#7ef0c8",
 };
 
 type Mode = "light" | "dark";
@@ -60,6 +72,11 @@ function applyVars(tokens: Tokens, mode: Mode) {
   r.setProperty("--glass-shadow", tokens.glassShadow);
   r.setProperty("--header-icon", tokens.headerIcon);
   r.setProperty("--search-text", tokens.searchText);
+  r.setProperty("--active-bg", tokens.activeBg);
+  r.setProperty("--active-text", tokens.activeText);
+  r.setProperty("--active-glow", tokens.activeGlow);
+  r.setProperty("--active-chip", tokens.activeChip);
+  r.setProperty("--active-icon", tokens.activeIcon);
   document.documentElement.dataset.theme = mode;
 }
 
