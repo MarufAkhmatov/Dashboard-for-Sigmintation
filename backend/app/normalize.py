@@ -33,6 +33,7 @@ _ALIASES = {
     "regulator": ["требование регулятора", "regulator requirement", "regulator"],
     "division": ["подразделение заказчика", "customer division", "division", "bo'lim"],
     "scoring": ["скоринг-балл", "scoring", "score"],
+    "quarterly_status": ["квартальный статус", "quarterly status"],
     "project": ["project", "project key", "project name", "проект", "loyiha"],
     "epic_key": ["epic link", "parent", "parent key", "epic", "parent link",
                  "эпик", "ссылка на эпик", "родитель", "epik"],
@@ -53,6 +54,17 @@ def _get(row: dict, field: str) -> str:
 
 
 _UNASSIGNED = {"не назначен", "не назначено", "unassigned", "none", "", "автоматический"}
+
+
+def _parse_comments(row: dict) -> list:
+    raw = row.get("comments_json") or row.get("comments") or ""
+    if not raw:
+        return []
+    try:
+        data = json.loads(raw)
+        return data if isinstance(data, list) else []
+    except Exception:
+        return []
 
 
 def _pm(row: dict) -> str:
@@ -246,6 +258,8 @@ def normalize_rows(rows: list[dict], default_project: str = "") -> list[dict]:
             "regulator": _get(row, "regulator"),
             "division": _get(row, "division"),
             "scoring": _get(row, "scoring"),
+            "quarterly_status": _get(row, "quarterly_status"),
+            "comments": _parse_comments(row),
             "links": _get_links(row),
             "history": history,
         })

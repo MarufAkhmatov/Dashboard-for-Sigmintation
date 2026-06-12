@@ -118,6 +118,38 @@ def _rule_based(q: str, analytics: dict, kpis: dict) -> str:
             f"{blockers['total_blocked']} blocked items.")
 
 
+def _extractive(text: str, n: int = 4) -> str:
+    import re
+    sents = re.split(r"(?<=[.!?。])\s+|\n+", text)
+    sents = [s.strip(" -•\t") for s in sents if len(s.strip()) > 18]
+    return " ".join(sents[:n])
+
+
+def summarize_issue(issue: dict) -> dict:
+    """AI summary of an issue from its Quarterly status field + comments."""
+    qs = (issue.get("quarterly_status") or "").strip()
+    comments = issue.get("comments") or []
+    ctext = "\n".join(f"[{c.get('date','')}] {c.get('author','')}: {c.get('text','')}"
+                      for c in comments).strip()
+    combined = (qs + "\n\n" + ctext).strip()
+    if not combined:
+        return {"summary": "", "source": "none", "comments_count": 0}
+
+    prompt = (
+        f"You are {ASSISTANT_NAME}. Summarize this Jira portfolio project's QUARTERLY STATUS "
+        "report and COMMENTS into a concise 2-4 sentence executive summary: current progress, "
+        "blockers/risks, and next steps. Answer in the same language as the source.\n\n"
+        f"QUARTERLY STATUS:\n{qs[:4000]}\n\nCOMMENTS:\n{ctext[:4000]}\n\nSUMMARY:"
+    )
+    out, source = _claude(prompt), "claude"
+    if not out:
+        out, source = _ollama(prompt), "ollama"
+    if not out:
+        out = _extractive(qs or ctext)
+        source = "extractive"
+    return {"summary": out, "source": source, "comments_count": len(comments)}
+
+
 def ask(question: str, payload: dict) -> dict:
     analytics = payload["analytics"]
     kpis = payload["kpis"]

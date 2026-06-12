@@ -2,6 +2,7 @@
 import csv
 import io
 import re
+import json
 import html as _htmllib
 from pathlib import Path
 
@@ -150,6 +151,21 @@ def _parse_jira_printable(text: str) -> list[dict]:
             if lbl and lbl not in fields:
                 fields[lbl] = _clean(lm.group(2))
 
+        # comments (comment-header / comment-body pairs)
+        comments = []
+        for cm in re.finditer(
+            r'<tr id="comment-header-(\d+)"[^>]*>(.*?)</tr>\s*<tr id="comment-body-\1"[^>]*>(.*?)</tr>',
+            p, re.S,
+        ):
+            hdr, body = cm.group(2), cm.group(3)
+            am = re.search(r'class="user-hover"[^>]*>(.*?)</a>', hdr)
+            dm = re.search(r'#336699">\s*([\d.]+)\s*</font>', hdr)
+            text = _clean(body)[:700]
+            if text:
+                comments.append({"author": _clean(am.group(1)) if am else "",
+                                 "date": dm.group(1) if dm else "", "text": text})
+        comments = comments[-12:]
+
         epic_raw = _cell_raw(p, "Epic Link")
         epic_key = ""
         em = re.search(r"/browse/([A-Z]{2,}-\d+)", epic_raw)
@@ -178,6 +194,8 @@ def _parse_jira_printable(text: str) -> list[dict]:
             "Требование регулятора": fields.get("Требование регулятора") or "",
             "Подразделение заказчика": fields.get("Подразделение заказчика") or "",
             "Скоринг-балл": fields.get("Скоринг-балл") or "",
+            "Квартальный статус": fields.get("Квартальный статус") or "",
+            "comments_json": json.dumps(comments, ensure_ascii=False),
         })
     return rows
 

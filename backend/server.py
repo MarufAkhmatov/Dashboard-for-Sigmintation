@@ -143,8 +143,9 @@ class Handler(BaseHTTPRequestHandler):
             if issue.get("created") and issue.get("resolved"):
                 dur = max(0, (E._d(issue["resolved"]) - E._d(issue["created"])).days)
             children = [c["key"] for c in data["issues"] if c.get("epic_key") == key]
+            summary = aria.summarize_issue(issue)
             return self._send({"found": True, "issue": issue, "duration_days": dur,
-                               "children": children})
+                               "children": children, "ai_summary": summary})
         if route == "/api/issues":
             data = storage.load_current()
             if not data:
